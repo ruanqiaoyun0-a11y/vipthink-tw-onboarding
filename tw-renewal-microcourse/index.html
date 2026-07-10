@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台湾LP续费全流程实战微课</title>
+<style>
+/* ============================================================
+   CSS 变量 —— 按需修改品牌色
+   ============================================================ */
+:root {
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --success: #10b981;
+  --danger: #ef4444;
+  --bg: #f0f7ff;
+  --card: #ffffff;
+  --text: #1e293b;
+  --text-secondary: #64748b;
+  --border: #bfdbfe;
+  --sidebar-bg: #1e293b;
+  --sidebar-text: #cbd5e1;
+  --sidebar-active: #3b82f6;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.7;
+  display: flex; min-height: 100vh;
+}
+
+/* ============================================================
+   侧边栏
+   ============================================================ */
+.sidebar {
+  width: 280px; min-width: 280px; background: var(--sidebar-bg);
+  color: var(--sidebar-text); display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+  transition: transform 0.3s;
+}
+.sidebar-close-btn { display: none; position: absolute; top: 8px; right: 12px;
+  background: none; border: none; color: #94a3b8; font-size: 20px;
+  cursor: pointer; z-index: 10; padding: 8px; line-height: 1; }
+
+.sidebar-header { padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-header h3 { font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.sidebar-header .course-title { font-size: 16px; font-weight: 700; color: #fff; line-height: 1.4; }
+
+.sidebar-progress { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 8px; }
+.progress-bar { height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--sidebar-active); border-radius: 3px; transition: width 0.5s ease; width: 0%; }
+
+.sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+.nav-section { padding: 8px 20px; cursor: pointer; display: flex; align-items: flex-start; gap: 12px; transition: all 0.2s; border-left: 3px solid transparent; }
+.nav-section:hover { background: rgba(255,255,255,0.05); }
+.nav-section.active { background: rgba(59,130,246,0.15); border-left-color: var(--sidebar-active); color: #fff; }
+.nav-section.completed { color: #94a3b8; }
+.nav-section.completed .nav-icon { background: var(--success); color: #fff; }
+.nav-section.locked { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+.nav-section.locked .nav-icon { background: rgba(255,255,255,0.08); color: #64748b; }
+.nav-icon { width: 32px; height: 32px; min-width: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: var(--sidebar-text); transition: all 0.3s; }
+.nav-section.active .nav-icon { background: var(--sidebar-active); color: #fff; }
+.nav-info .nav-label { font-size: 13px; font-weight: 600; }
+.nav-info .nav-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+.nav-section.active .nav-info .nav-sub { color: #94a3b8; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: #64748b; }
+
+.study-timer { padding: 10px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.timer-icon { font-size: 16px; }
+.timer-display { color: #fff; font-weight: 700; font-variant-numeric: tabular-nums; }
+.timer-label { color: #94a3b8; font-size: 11px; }
+
+/* ============================================================
+   主内容区
+   ============================================================ */
+.main { margin-left: 280px; flex: 1; padding: 40px; max-width: 900px; }
+.section { display: none; animation: fadeSlide 0.4s ease; }
+.section.active { display: block; }
+@keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.section-header { margin-bottom: 32px; }
+.section-badge { display: inline-block; padding: 4px 14px; background: #dbeafe; color: var(--primary-dark); border-radius: 20px; font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+.section-header h1 { font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.section-header .duration { font-size: 14px; color: var(--text-secondary); }
+
+/* ============================================================
+   内容组件
+   ============================================================ */
+.card { background: var(--card); border-radius: var(--radius); padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+
+.highlight-box { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-left: 4px solid var(--primary); padding: 20px 24px; border-radius: var(--radius-sm); margin: 20px 0; }
+.highlight-box.warning { background: linear-gradient(135deg, #fef3c7, #fde68a); border-left-color: var(--accent); }
+.highlight-box.danger { background: linear-gradient(135deg, #fef2f2, #fee2e2); border-left-color: var(--danger); }
+.highlight-box.success { background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-left-color: var(--success); }
+
+.script-block { background: #f1f5f9; padding: 20px 24px; border-radius: var(--radius-sm); font-style: italic; color: #475569; position: relative; margin: 16px 0; line-height: 1.8; }
+.script-block::before { content: '🎙️ 旁白稿'; position: absolute; top: -10px; left: 16px; background: #475569; color: #fff; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-style: normal; }
+
+.flow-steps { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
+.flow-step { flex: 1; min-width: 140px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 20px; text-align: center; box-shadow: var(--shadow); }
+.flow-step .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; margin-bottom: 12px; }
+.flow-step h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.flow-step p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.flow-arrow { display: flex; align-items: center; font-size: 24px; color: var(--primary); font-weight: 700; }
+
+.strategy-grid { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
+.strategy-card { flex: 1; min-width: 200px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 24px; text-align: center; box-shadow: var(--shadow); }
+.strategy-card .icon { font-size: 36px; margin-bottom: 12px; }
+.strategy-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.strategy-card p { font-size: 13px; color: var(--text-secondary); }
+
+.lifeline-cards { display: flex; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
+.lifeline-card { flex: 1; min-width: 180px; background: var(--card); border: 2px solid var(--danger); border-radius: var(--radius-sm); padding: 24px; text-align: center; box-shadow: var(--shadow); }
+.lifeline-card .num { font-size: 28px; font-weight: 800; color: var(--danger); margin-bottom: 8px; }
+
+.flash-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+.flash-card { flex: 1; min-width: 220px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; box-shadow: var(--shadow); }
+
+.callout-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.callout-item { flex: 1; min-width: 180px; background: var(--card); border-radius: var(--radius-sm); padding: 20px; text-align: center; box-shadow: var(--shadow); border-top: 4px solid var(--primary); }
+
+/* ============================================================
+   视频
+   ============================================================ */
+.video-wrapper { margin: 24px 0; }
+.video-label { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+video { width: 100%; border-radius: var(--radius-sm); background: #000; }
+
+/* ============================================================
+   互动组件：选择题
+   ============================================================ */
+.quiz-card { background: var(--card); border-radius: var(--radius); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg); border: 2px solid var(--border); }
+.quiz-card.answered-correct { border-color: var(--success); }
+.quiz-card.answered-wrong { border-color: var(--danger); }
+.quiz-question { font-size: 16px; font-weight: 600; margin-bottom: 20px; line-height: 1.7; }
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option { display: flex; align-items: center; gap: 12px; padding: 16px 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; min-height: 48px; }
+.quiz-option:hover { border-color: var(--primary-light); background: #f0f7ff; }
+.quiz-option.selected { border-color: var(--primary); background: #dbeafe; }
+.quiz-option.correct { border-color: var(--success) !important; background: #ecfdf5 !important; }
+.quiz-option.wrong { border-color: var(--danger) !important; background: #fef2f2 !important; }
+.quiz-option-label { width: 30px; height: 30px; min-width: 30px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+.quiz-feedback { display: none; margin-top: 16px; padding: 16px; border-radius: var(--radius-sm); font-size: 14px; line-height: 1.7; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: #ecfdf5; color: #065f46; }
+.quiz-feedback.wrong { background: #fef2f2; color: #991b1b; }
+
+/* ============================================================
+   互动组件：AI 模拟对话
+   ============================================================ */
+.dialogue-container { background: var(--card); border-radius: var(--radius); padding: 28px; margin: 24px 0; box-shadow: var(--shadow-lg); border: 2px solid var(--border); }
+.dialogue-scenario { background: #f8fafc; padding: 14px 16px; border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+.customer-bubble { background: #f1f5f9; padding: 16px 20px; border-radius: 16px 16px 16px 4px; font-size: 14px; line-height: 1.7; margin-bottom: 16px; border: 1px solid #e2e8f0; }
+.reply-input { width: 100%; min-height: 120px; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; line-height: 1.7; resize: vertical; }
+.reply-input:focus { border-color: var(--primary-light); outline: none; }
+.dialogue-actions { display: flex; gap: 12px; margin-top: 16px; }
+.ai-feedback-panel { display: none; margin-top: 20px; padding: 20px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+.ai-feedback-panel.show { display: block; }
+
+/* ============================================================
+   互动组件：终极考核
+   ============================================================ */
+.final-task-container { margin: 24px 0; }
+.final-task-input { width: 100%; min-height: 160px; padding: 16px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: inherit; line-height: 1.8; resize: vertical; }
+.final-task-input:focus { border-color: var(--primary-light); outline: none; }
+.char-counter { text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* ============================================================
+   评分展示
+   ============================================================ */
+.score-display { text-align: center; margin-bottom: 16px; }
+.score-circle { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; }
+.score-circle.high { background: #ecfdf5; color: #065f46; border: 3px solid var(--success); }
+.score-circle.medium { background: #fffbeb; color: #92400e; border: 3px solid var(--accent); }
+.score-circle.low { background: #fef2f2; color: #991b1b; border: 3px solid var(--danger); }
+
+.keywords-result { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.keyword-tag { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.keyword-tag.found { background: #ecfdf5; color: #065f46; }
+.keyword-tag.missing { background: #fef2f2; color: #991b1b; }
+
+.eval-dimensions { display: flex; gap: 16px; flex-wrap: wrap; }
+.eval-dim { flex: 1; min-width: 160px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 20px; text-align: center; }
+.eval-dim h4 { font-size: 14px; margin-bottom: 8px; }
+.eval-dim .stars { font-size: 16px; margin: 8px 0; }
+
+/* ============================================================
+   证书弹窗
+   ============================================================ */
+.cert-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; justify-content: center; align-items: center; }
+.cert-overlay.show { display: flex; }
+.certificate-paper { background: #fff; border-radius: 16px; padding: 40px 32px; max-width: 560px; width: 90%; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.3); }
+.cert-title { font-size: 28px; font-weight: 800; color: #1d4ed8; margin-bottom: 8px; }
+.cert-sub { font-size: 12px; color: #64748b; letter-spacing: 0.1em; margin-bottom: 24px; }
+.cert-body { font-size: 15px; color: #1e293b; line-height: 2.2; }
+.cert-name { display: inline-block; border-bottom: 2px solid #2563eb; min-width: 100px; padding: 2px 8px; margin: 0 4px; outline: none; }
+.cert-course { font-weight: 700; color: #1d4ed8; margin: 8px 0; }
+.cert-score { margin: 20px 0 4px; font-size: 16px; font-weight: 600; color: #10b981; }
+.cert-final-score { margin: 4px 0 20px; font-size: 14px; font-weight: 600; color: #1d4ed8; }
+.cert-footer { display: flex; justify-content: space-between; font-size: 12px; color: #64748b; margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 16px; }
+.cert-actions { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+
+/* ============================================================
+   按钮 & 导航
+   ============================================================ */
+.btn { display: inline-block; padding: 12px 28px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
+.btn-success { background: var(--success); }
+.btn-success:hover { background: #059669; }
+
+.section-nav-buttons { display: flex; justify-content: space-between; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+/* ============================================================
+   笔记面板 & Toast
+   ============================================================ */
+.notes-toggle { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; border: none; cursor: pointer; font-size: 20px; box-shadow: var(--shadow-lg); z-index: 50; display: flex; align-items: center; justify-content: center; }
+.notes-panel { position: fixed; right: 0; top: 0; bottom: 0; width: 300px; background: var(--card); box-shadow: -4px 0 20px rgba(0,0,0,0.1); z-index: 90; transform: translateX(100%); transition: transform 0.3s; padding: 24px; display: flex; flex-direction: column; }
+.notes-panel.open { transform: translateX(0); }
+.notes-panel h3 { margin-bottom: 12px; }
+.notes-panel textarea { flex: 1; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-family: inherit; font-size: 13px; resize: none; }
+
+.toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 24px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; z-index: 300; animation: toastIn 0.3s ease; box-shadow: var(--shadow-lg); }
+.toast.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.toast.warning { background: #fffbeb; color: #92400e; border: 1px solid #fcd34d; }
+.toast.info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============================================================
+   移动端适配 (≤1024px)
+   ============================================================ */
+.mobile-header { display: none; background: var(--sidebar-bg); color: #fff; padding: 10px 16px; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 50; min-height: 48px; }
+.mobile-header .mh-title { flex: 1; font-weight: 700; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mobile-header .mh-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 4px 8px; line-height: 1; min-width: 36px; min-height: 36px; display: flex; align-items: center; justify-content: center; }
+.mobile-progress-bar { display: none; height: 3px; background: rgba(255,255,255,0.15); position: sticky; top: 48px; z-index: 49; }
+.mobile-progress-bar .mpb-fill { height: 100%; background: var(--primary-light); transition: width 0.5s ease; width: 0%; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+
+@media (max-width: 1024px) {
+  body { flex-direction: column; }
+  .sidebar { transform: translateX(-100%); width: 280px; min-width: 280px; transition: transform 0.3s ease; }
+  .sidebar.open { transform: translateX(0); z-index: 110; }
+  .sidebar-overlay.show { display: block; }
+  .sidebar-close-btn { display: block; }
+  .mobile-header { display: flex; }
+  .mobile-progress-bar { display: block; }
+  .main { margin-left: 0 !important; padding: 16px 14px 80px; max-width: 100%; }
+  .section-header h1 { font-size: 20px; }
+  .section-badge { font-size: 11px; padding: 3px 10px; }
+  .card { padding: 16px; border-radius: 10px; }
+  .card-title { font-size: 16px; }
+  .flow-steps, .strategy-grid, .lifeline-cards, .callout-grid, .flash-cards, .eval-dimensions { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+  .quiz-option { padding: 14px 12px; min-height: 44px; font-size: 13px; }
+  .dialogue-actions { flex-direction: column; }
+  .dialogue-actions .btn { width: 100%; }
+  .final-task-input { min-height: 120px; font-size: 13px; padding: 12px; }
+  .section-nav-buttons { flex-direction: column; gap: 10px; position: sticky; bottom: 0; background: var(--bg); padding: 12px 0; border-top: 1px solid var(--border); margin-top: 24px; }
+  .section-nav-buttons .btn { width: 100%; text-align: center; padding: 14px 24px; font-size: 15px; }
+  .section-nav-buttons > div { width: 100%; }
+  .notes-toggle { display: none; }
+  .notes-panel { width: 100%; max-width: 340px; }
+  .toast { left: 50%; right: auto; transform: translateX(-50%); bottom: 80px; white-space: nowrap; font-size: 13px; padding: 10px 20px; }
+  .certificate-paper { width: 95%; max-width: 95%; padding: 28px 20px; max-height: 90vh; overflow-y: auto; }
+  .cert-title { font-size: 22px; }
+  .cert-body { font-size: 13px; line-height: 1.8; }
+  .cert-actions { flex-direction: column; }
+  .cert-actions .btn { width: 100%; }
+  .score-circle { width: 56px; height: 56px; font-size: 22px; }
+  .keyword-tag { font-size: 11px; padding: 3px 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     侧边栏
+     ============================================================ -->
+<aside class="sidebar" id="sidebar">
+  <button class="sidebar-close-btn" onclick="toggleSidebar()" aria-label="关闭菜单">✕</button>
+  <div class="sidebar-header">
+    <h3>微课</h3>
+    <div class="course-title">台湾LP续费全流程实战微课</div>
+  </div>
+  <div class="sidebar-progress">
+    <div class="progress-label"><span>学习进度</span><span id="progressPercent">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="study-timer">
+    <span class="timer-icon">⏱</span>
+    <span class="timer-display" id="timerDisplay">00:00</span>
+    <span class="timer-label">学习时长</span>
+  </div>
+  <div class="sidebar-nav" id="sidebarNav"></div>
+  <div class="sidebar-footer">
+    <button onclick="toggleNotes()" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--sidebar-text);padding:6px 16px;border-radius:20px;font-size:12px;cursor:pointer;width:100%;">📝 学习笔记</button>
+  </div>
+</aside>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ============================================================
+     移动端顶部导航
+     ============================================================ -->
+<div class="mobile-header">
+  <button class="mh-btn" onclick="toggleSidebar()" aria-label="菜单">☰</button>
+  <span class="mh-title" id="mhTitle">台湾LP续费全流程实战微课</span>
+  <span style="font-size:12px;opacity:0.7;white-space:nowrap;" id="mhTimer">00:00</span>
+</div>
+<div class="mobile-progress-bar"><div class="mpb-fill" id="mpbFill"></div></div>
+
+<!-- ============================================================
+     主内容区
+     ============================================================ -->
+<main class="main" id="mainContent"></main>
+
+<!-- ============================================================
+     证书弹窗
+     ============================================================ -->
+<div class="cert-overlay" id="certOverlay">
+  <div class="certificate-paper" id="certPaper">
+    <div class="cert-title">🏆 结业证书</div>
+    <div class="cert-sub">CERTIFICATE OF COMPLETION</div>
+    <div class="cert-body">
+      <p>兹证明</p>
+      <p><span class="cert-name" id="certStudentName" contenteditable="true">请填写姓名</span></p>
+      <p>已完成</p>
+      <p class="cert-course">台湾LP续费全流程实战微课</p>
+      <p>全部课程内容并通过考核</p>
+      <div class="cert-score" id="certScore">综合评定：通过</div>
+      <div class="cert-final-score" id="certFinalScore">终极考核得分：—</div>
+    </div>
+    <div class="cert-footer">
+      <span id="certDate"></span>
+      <span>VIPTHINK</span>
+    </div>
+    <div class="cert-actions">
+      <button class="btn" onclick="printCertificate()">🖨️ 打印证书</button>
+      <button class="btn btn-outline" onclick="closeCertificate()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     笔记面板
+     ============================================================ -->
+<button class="notes-toggle" onclick="toggleNotes()">📝</button>
+<div class="notes-panel" id="notesPanel">
+  <h3>📝 学习笔记 — <span id="notesChapterLabel" style="font-weight:400;font-size:13px;color:var(--text-secondary);"></span></h3>
+  <textarea id="notesTextarea" placeholder="在这里记录你的学习心得..."></textarea>
+  <button class="btn btn-outline" onclick="toggleNotes()" style="margin-top:12px;width:100%;">关闭</button>
+</div>
+
+<script>
+// ============================================================
+// 课程数据 — 在此配置
+// ============================================================
+const courseData = {
+  title: '台湾LP续费全流程实战微课',
+  sections: [
+    {
+  id: 's1', title: '续费政策与策略', duration: '8–10分钟', icon: '1',
+  type: 'content_quiz', quizId: 'quiz1',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第一章</span>
+      <h1>续费政策与策略</h1>
+      <div class="duration">⏱ 8–10分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">课包生命周期划分</div>
+      <p>以<strong>新签课包整体生命周期的 1/3</strong>划分。运营每月初会提供「一续至三续池」学员，需重点跟进促进转化。</p>
+      <div class="highlight-box" style="margin-top:16px;">
+        <p><strong>升舱期</strong>：可购买升舱课包，优惠力度较大。</p>
+        <p><strong>早鸟期 / 结课期</strong>：可购买普通课包。</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">益智续费策略（以台湾当月为例）</div>
+      <p>根据「一续池 / 多续池」及不同课包生命周期，设置对应的「服务月」与优惠节点，形成拆标跟进节奏。</p>
+      <div style="margin-top:16px;text-align:center;">
+        <img src="renewal-strategy-chart.png" alt="续费策略拆标逻辑" style="max-width:100%;border-radius:8px;border:1px solid var(--border);">
+      </div>
+    </div>
+  `
+},
+{
+  id: 's2', title: '谈单核心逻辑', duration: '6–8分钟', icon: '2',
+  type: 'content_quiz', quizId: 'quiz2',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第二章</span>
+      <h1>谈单核心逻辑</h1>
+      <div class="duration">⏱ 6–8分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">消费决策的本质：性价比</div>
+      <div class="highlight-box">
+        <p style="font-size:18px;font-weight:700;text-align:center;">性价比 = 学习效果 × 服务质量 / 续费价格</p>
+      </div>
+      <ul style="margin-top:16px;padding-left:20px;line-height:2;">
+        <li><strong>学习效果</strong>：当下孩子学习的<strong>外化</strong> + 未来家长的<strong>期望</strong>。</li>
+        <li><strong>服务质量</strong>：教学质量、与 LP 的粘合度，让家长感受到「想他所想，急他所需」。</li>
+        <li><strong>续费价格</strong>：公司政策支撑，优惠是相对的、有限的、来之不易的。</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-title">续费流程四步思路</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-num">1</div><h4>学情反馈</h4><p>专题内容 + 效果外化</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">2</div><h4>课程规划</h4><p>九阶体系 + 后续重点</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">3</div><h4>提出课包方案</h4><p>长期 / 短期方案</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">4</div><h4>推单收单</h4><p>逼单 + 带付</p></div>
+      </div>
+    </div>
+  `
+},
+{
+  id: 's3', title: '学情反馈 + 课程规划', duration: '12–15分钟', icon: '3',
+  type: 'content_chart_dialogue', quizId: 'dialogue1',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第三章</span>
+      <h1>学情反馈 + 课程规划</h1>
+      <div class="duration">⏱ 12–15分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">第一步：学情反馈</div>
+      <p><strong>1. 学习专题内容描述</strong></p>
+      <p>结合孩子实际学习情况，说明近期专题（如《构建策略》《观察推理》）及培养的能力：空间想象力、有序思维、推理能力、表述能力。</p>
+      <p style="margin-top:12px;"><strong>2. 效果外化 — 结合家长报名初衷</strong></p>
+      <ul style="padding-left:20px;line-height:1.9;">
+        <li>知识内容 + 方法/能力</li>
+        <li>学习习惯：学习闭环数据、积极性、独立性、细心程度</li>
+        <li>课堂表现：表达、专注度、规则意识</li>
+      </ul>
+      <p style="margin-top:12px;"><strong>3. 提出待提升点 + 建议</strong></p>
+      <p>指出需要进步的地方，并给出家长可配合的具体建议，然后过渡到询问家长期望。</p>
+    </div>
+    <div class="card">
+      <div class="card-title">第二步：课程规划</div>
+      <p><strong>思维培养是长期、系统化的过程。</strong></p>
+      <div class="flash-cards" style="margin-top:16px;">
+        <div class="flash-card"><h4>幼儿园阶段</h4><p>思维启蒙，让孩子对思考有兴趣。</p></div>
+        <div class="flash-card"><h4>国小一至三年级</h4><p>抽象逻辑思维萌芽，最关键的形成期，做好学习习惯与能力衔接。</p></div>
+        <div class="flash-card"><h4>国小四至六年级</h4><p>抽象逻辑思维建立，进入综合运用期，强调归纳、迁移与举一反三。</p></div>
+      </div>
+      <p style="margin-top:16px;">豌豆九阶体系（S1–S9）贴合台湾 108 课纲，S2–S3 是幼儿园升国小的衔接关键期，基础打稳才能快速进入思维形成期。</p>
+    </div>
+  `
+},
+{
+  id: 's4', title: '课包方案 + 推单收单', duration: '10–12分钟', icon: '4',
+  type: 'content_chart_dialogue', quizId: 'dialogue2',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第四章</span>
+      <h1>课包方案 + 推单收单</h1>
+      <div class="duration">⏱ 10–12分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">第三步：提出课包方案</div>
+      <p>先告知剩余课时、可学习月份、完成 S2 / S3 分别还需多少课时，再给出两个方案：</p>
+      <div class="strategy-grid" style="margin-top:16px;">
+        <div class="strategy-card"><div class="icon">📅</div><h4>方案一：长期方案</h4><p>课时多、总价高、单价低。突出赠送课时、豌豆币、打卡次数、学习周期。</p></div>
+        <div class="strategy-card"><div class="icon">🎯</div><h4>方案二：短期方案</h4><p>课时少、总价低、单价高一些。突出报名差价对比与有效赠送。</p></div>
+      </div>
+      <div class="highlight-box warning" style="margin-top:16px;">
+        <p><strong>试探话术：</strong>「妈妈您是更倾向学习到 S3 结束，还是 S2 结束呢？/ 您更倾向长期还是短期？」</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">第四步：推单收单</div>
+      <p><strong>逼单话术：</strong></p>
+      <ul style="padding-left:20px;line-height:1.9;">
+        <li><strong>性价比（紧迫性）</strong>：确认预算与需求，强调额外优惠、录播课、豌豆币、服务打包，折算单节课成本。</li>
+        <li><strong>理念（重要性）</strong>：思维能力是终身核心能力，不会被 AI 取代；持续学习才能提升思维上限。</li>
+      </ul>
+      <p style="margin-top:12px;"><strong>带付话术：</strong>「我马上把报名链接传给您，截图发给我后立刻登记，所有赠品和专属优惠都会帮您兑换好。」</p>
+    </div>
+  `
+},
+{
+  id: 's5', title: '异议处理 + 价值塑造', duration: '12–15分钟', icon: '5',
+  type: 'content_chart_dialogue', quizId: 'dialogue3',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第五章</span>
+      <h1>异议处理 + 价值塑造</h1>
+      <div class="duration">⏱ 12–15分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">第五步：异议处理核心方向</div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="step-num">1</div><h4>理解共情</h4><p>先共情，稳情绪</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">2</div><h4>挖掘根源</h4><p>辨真假，找根源</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">3</div><h4>精准破局</h4><p>给具体方案</p></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="step-num">4</div><h4>理念强化</h4><p>推动决策</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">价值塑造：三性</div>
+      <div class="callout-grid">
+        <div class="callout-item"><h4>重要性</h4><p>续费是必要教育投入；思维终身能力、课程完整性、关键期价值、已有沉淀。</p></div>
+        <div class="callout-item"><h4>紧迫性</h4><p>时间窗口限制、学习进度压力、优惠时效约束。</p></div>
+        <div class="callout-item"><h4>唯一性</h4><p>课程产品、服务保障、师生适配、优惠福利的不可替代。</p></div>
+      </div>
+      <div class="highlight-box success" style="margin-top:16px;">
+        <p><strong>核心：</strong>让家长认同「续费不是额外开支，而是教育刚需投入」。</p>
+      </div>
+    </div>
+  `
+},
+{
+  id: 's6', title: '注意事项 + 付费方式', duration: '8–10分钟', icon: '6',
+  type: 'content_quiz', quizId: 'quiz3',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第六章</span>
+      <h1>注意事项 + 付费方式</h1>
+      <div class="duration">⏱ 8–10分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">注意事项</div>
+      <ol style="padding-left:20px;line-height:2;">
+        <li>优惠不要一次性全部给出去，保留底牌。</li>
+        <li>设置优惠节点、名额限制。</li>
+        <li>若家长说还要考虑，约定再次跟进时间。</li>
+        <li>不论续不续，最终结语落脚在学习上，突出服务。</li>
+        <li>若非电话中直接付款，要说明支付时效，并持续跟进。</li>
+      </ol>
+    </div>
+    <div class="card">
+      <div class="card-title">付费方式</div>
+      <p><strong>1. 官方链接支付</strong>：LP 工作台 → 学员详情页 → 续费 → 选择课时包 → 复制链接 → 发给家长。</p>
+      <div style="margin:12px 0;display:flex;gap:12px;flex-wrap:wrap;">
+        <img src="renewal-button.png" alt="续费入口" style="max-width:48%;border-radius:8px;border:1px solid var(--border);">
+        <img src="package-select.png" alt="选择续费套餐" style="max-width:48%;border-radius:8px;border:1px solid var(--border);">
+      </div>
+      <p><strong>2. 其他付款方式</strong>：AFTEE 等。链接 24 小时内有效，支持卡支付（Visa、Mastercard 等）。</p>
+      <p style="margin-top:12px;"><strong>3. 到账核对与凭证</strong>：付款后 LP 需后台核对新增课时及赠送内容；电子合同在家长端 APP 查看；电子发票在【审批申请】提交。</p>
+      <p style="margin-top:12px;"><strong>4. 续费确认表</strong>：家长付款后，台湾主要使用 LINE 手动发送，留痕报备；每周日截止质检。</p>
+      <div style="margin:12px 0;display:flex;gap:12px;flex-wrap:wrap;">
+        <img src="renewal-confirm-msg.png" alt="续费确认表示范" style="max-width:48%;border-radius:8px;border:1px solid var(--border);">
+        <img src="renewal-confirm-table.png" alt="续费确认表" style="max-width:48%;border-radius:8px;border:1px solid var(--border);">
+      </div>
+      <div style="text-align:center;margin-top:12px;">
+        <img src="renewal-confirm-order.png" alt="续费确认单" style="max-width:60%;border-radius:8px;border:1px solid var(--border);">
+      </div>
+    </div>
+  `
+},
+{
+  id: 's7', title: '终极考核', duration: '15–20分钟', icon: '🏆',
+  type: 'content',
+  content: `
+    <div class="section-header">
+      <span class="section-badge">第七章</span>
+      <h1>🏆 终极考核</h1>
+      <div class="duration">⏱ 15–20分钟</div>
+    </div>
+    <div class="card">
+      <div class="card-title">考核场景</div>
+      <p>你作为台湾 LP，即将为学员<b>果果</b>的妈妈进行续费沟通。请基于以下完整学情，写一段完整的话术（300–500 字）。</p>
+      <table style="width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;">
+        <tr style="background:var(--primary);color:#fff;"><th style="padding:8px;border:1px solid var(--border);">项目</th><th style="padding:8px;border:1px solid var(--border);">详情</th></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">学员</td><td style="padding:8px;border:1px solid var(--border);">果果，7岁，女孩，二年级，中国台湾</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">学习负责人</td><td style="padding:8px;border:1px solid var(--border);">妈妈</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">池子/阶段</td><td style="padding:8px;border:1px solid var(--border);">老生结课期；7月份刚升阶；当前学习 S5 第1讲</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">上课时间</td><td style="padding:8px;border:1px solid var(--border);">北京时间每周六日早10点</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">主讲老师</td><td style="padding:8px;border:1px solid var(--border);">小泡芙老师 S4</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">首次报名课包</td><td style="padding:8px;border:1px solid var(--border);">5888元；45赠5 + 打卡24次</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">剩余课时</td><td style="padding:8px;border:1px solid var(--border);">10节</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">转介绍关系</td><td style="padding:8px;border:1px solid var(--border);">有上级转介绍（大宝已续费）；也有推荐下级</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">打卡情况</td><td style="padding:8px;border:1px solid var(--border);">偶尔打卡；有豌豆币未兑换</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">学员身份</td><td style="padding:8px;border:1px solid var(--border);">SVIP学员，多娃在读</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">家长特点</td><td style="padding:8px;border:1px solid var(--border);">理念较好，陪伴上课，大宝已在读很多年</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">学习表现</td><td style="padding:8px;border:1px solid var(--border);">出勤100%、作业100%；请假及时补课，小老师视频会完成</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">优缺点</td><td style="padding:8px;border:1px solid var(--border);">很喜欢老师，比较需要被关注；害羞腼腆，需要鼓励才敢表达；注意力有限，数学基础不错</td></tr>
+        <tr><td style="padding:8px;border:1px solid var(--border);font-weight:700;">合同规则</td><td style="padding:8px;border:1px solid var(--border);">请假机会共8次（已使用2次）；停课机会1次（尚未使用）</td></tr>
+      </table>
+      <p>话术需覆盖以下环节：</p>
+      <ul style="padding-left:20px;line-height:2;">
+        <li>学情反馈 + 效果外化（结合果果的优点、进步与性格特点）</li>
+        <li>课程规划（S5 衔接 / 九阶体系 / 小泡芙老师风格）</li>
+        <li>课包方案推荐（基于首次课包、剩余课时、多娃 / SVIP / 老带新优惠）</li>
+        <li>推单逼单（紧迫性 / 重要性 / 唯一性）</li>
+        <li>异议处理 / 价值塑造（妈妈可能担心孩子害羞、注意力、时间冲突等）</li>
+        <li>闭环承诺（豌豆币兑换、请假 / 补课 / 停课权益说明）</li>
+      </ul>
+    </div>
+    <div class="card final-task-container" id="finalTaskContainer">
+      <h3 style="margin-bottom:12px;">📝 请在这里撰写你的续费话术</h3>
+      <textarea class="final-task-input" id="finalTaskInput" placeholder="请写一段完整、口语化的 LP 续费话术…"></textarea>
+      <div class="char-counter" id="finalCharCount">0 / 500字</div>
+      <div style="display:flex;gap:12px;margin-top:16px;">
+        <button class="btn" id="finalSubmitBtn" onclick="submitFinalTask()">提交考核</button>
+        <button class="btn btn-outline" onclick="resetFinalTask()">重新作答</button>
+      </div>
+      <div id="finalFeedback" style="display:none;margin-top:20px;"></div>
+    </div>
+  `
+}
+  ]
+};
+
+// ============================================================
+// 互动练习数据 — 在此配置
+// ============================================================
+const quizzes = {
+  quiz1: {
+  quizId: 'quiz1',
+  question: '按照续费政策，课包生命周期通常如何划分？',
+  options: [
+    { label: 'A', text: '按新签课包整体生命周期的 1/2 划分' },
+    { label: 'B', text: '按新签课包整体生命周期的 1/3 划分' },
+    { label: 'C', text: '按学员入学月份划分' },
+    { label: 'D', text: '按自然年季度划分' }
+  ],
+  correct: 1,
+  feedback_correct: '✅ 正确！按新签课包整体生命周期的 1/3 划分，是升舱期、早鸟期、结课期制定优惠节奏的基础。',
+  feedback_wrong: '❌ 错误。正确答案是 B：按新签课包整体生命周期的 1/3 划分。'
+},
+quiz2: {
+  quizId: 'quiz2',
+  question: '续费消费决策的本质「性价比」如何计算？',
+  options: [
+    { label: 'A', text: '续费价格 / (学习效果 + 服务质量)' },
+    { label: 'B', text: '学习效果 × 服务质量 / 续费价格' },
+    { label: 'C', text: '服务质量 / 学习效果' },
+    { label: 'D', text: '学习效果 + 服务质量' }
+  ],
+  correct: 1,
+  feedback_correct: '✅ 正确！性价比 = 学习效果 × 服务质量 / 续费价格。要让家长感到「物超所值」。',
+  feedback_wrong: '❌ 错误。正确答案是 B：学习效果 × 服务质量 / 续费价格。'
+},
+quiz3: {
+  quizId: 'quiz3',
+  question: '以下哪一项是正确的续费跟进动作？',
+  options: [
+    { label: 'A', text: '一次性把所有优惠全部给家长' },
+    { label: 'B', text: '家长说还要考虑时，不约定下次跟进时间' },
+    { label: 'C', text: '非电话中直接付款时，说明支付时效并持续跟进' },
+    { label: 'D', text: '续费确认表无需发送，留痕不重要' }
+  ],
+  correct: 2,
+  feedback_correct: '✅ 正确！支付时效、持续跟进、留痕报备都是降低风险、提高转化的关键动作。',
+  feedback_wrong: '❌ 错误。正确答案是 C：非电话中直接付款时，说明支付时效并持续跟进。'
+},
+dialogue1: {
+  isDialogue: true,
+  question: '「老师，最近孩子上课有时跟不上，但课后作业完成还可以。您觉得后面要怎么学？」',
+  scenario: '家长主动询问学情与后续规划。请你以 LP 身份，先进行学情反馈，再过渡到课程规划与期望询问。',
+  expectedKeywords: [
+    { concept: '学习专题反馈', terms: ['专题','构建策略','观察推理','空间想象力','有序思维','解决问题','推理能力'], weight: 15 },
+    { concept: '效果外化', terms: ['进步','提升','老师反馈','自评','正确率','积极性','配合','独立','细心'], weight: 18 },
+    { concept: '待提升点+建议', terms: ['待提升','需要进步','建议','课后','家长','配合','练习','巩固'], weight: 15 },
+    { concept: '过渡询问期望', terms: ['期望','后期','学习规划','培养','提升','想让孩子','哪方面','下一阶段'], weight: 18 },
+    { concept: '九阶/课程规划', terms: ['S2','S3','九阶','体系','国小','衔接','基础','思维形成期','108课纲'], weight: 14 },
+    { concept: '共情语气', terms: ['理解','放心','不要太着急','慢慢来','一起','帮助','支持'], weight: 10 }
+  ]
+},
+dialogue2: {
+  isDialogue: true,
+  question: '「你说的这两个方案我再想想，我想比较一下。」',
+  scenario: '家长听完长期/短期两个课包方案后表示想再考虑。请你用逼单话术推动即时决策。',
+  expectedKeywords: [
+    { concept: '确认需求/预算', terms: ['预算','总价','单价','考虑','学到','程度','需求','想让孩子'], weight: 15 },
+    { concept: '优惠紧迫性', terms: ['限时','优惠','今天','确定','额外','现在','名额','申请','经理'], weight: 18 },
+    { concept: '价值/理念', terms: ['思维','能力','持续','学习','效果','长期','AI','未来','竞争力','受用'], weight: 16 },
+    { concept: '具体方案对比', terms: ['长期','短期','S2','S3','课时','单价','总价','学习周期','赠品'], weight: 14 },
+    { concept: '带付/行动', terms: ['链接','报名','截图','登记','兑换','缴费','马上','完成'], weight: 15 },
+    { concept: '稀缺/唯一', terms: ['只有','专属','老学员','新学员','后续','不会再','仅此一次','错过'], weight: 12 }
+  ]
+},
+dialogue3: {
+  isDialogue: true,
+  question: '「孩子学校作业已经很多了，哪有时间再上这个课？」',
+  scenario: '家长以「没时间」提出异议。请你先共情、再挖掘真实顾虑，并给出解决方案。',
+  expectedKeywords: [
+    { concept: '共情理解', terms: ['理解','知道','确实','忙','作业多','学校','辛苦','不容易'], weight: 18 },
+    { concept: '挖掘根源', terms: ['担心','顾虑','时间是吗','其实还是','请问','是不是'], weight: 15 },
+    { concept: '时间规划/效率', terms: ['时间','规划','安排','效率','每周','固定','习惯','碎片化','坚持','节奏'], weight: 16 },
+    { concept: '课程连续性', terms: ['中断','断层','之前','进步','效果','巩固','衔接','持续'], weight: 12 },
+    { concept: '精准破局', terms: ['方案','调整','优先级','减少','一周','课时','录播','回放','灵活'], weight: 14 },
+    { concept: '理念强化', terms: ['关键期','习惯','基础','长期','思维','升学','国小','准备','未来'], weight: 15 }
+  ]
+}
+};
+
+// ============================================================
+// 状态管理
+// ============================================================
+const LS_PREFIX = 'tw_lp_renewal';
+let currentSection = 0;
+let completedSections = new Set();
+let quiz1Answered = false;
+let quiz2Answered = false;
+let quiz3Answered = false;
+let dialogue1Answered = false;
+let dialogue1Score = 0;
+let dialogue2Answered = false;
+let dialogue2Score = 0;
+let dialogue3Answered = false;
+let dialogue3Score = 0;
+let quiz1Selected = -1;
+let quiz2Selected = -1;
+let quiz3Selected = -1;
+let dialogue1Text = '';
+let dialogue2Text = '';
+let dialogue3Text = '';
+let finalTaskSubmitted = false;
+let finalScore = 0;
+
+let studySeconds = 0;
+let timerInterval = null;
+
+// ============================================================
+// 初始化
+// ============================================================
+function init() {
+  renderSidebar();
+  renderSections();
+  navigateTo(0);
+  setupQuizListeners();
+  setupFinalTaskListener();
+  startTimer();
+  loadNotes();
+  loadProgress();
+  applyLoadedState();
+}
+
+function renderSidebar() {
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML = courseData.sections.map((s, i) => `
+    <div class="nav-section" data-index="${i}" onclick="navigateTo(${i})">
+      <div class="nav-icon">${s.icon}</div>
+      <div class="nav-info">
+        <div class="nav-label">${s.title}</div>
+        <div class="nav-sub">⏱ ${s.duration}</div>
+      </div>
+    </div>
+  `).join('');
+  updateSidebarLocks();
+}
+
+function updateSidebarLocks() {
+  document.querySelectorAll('.nav-section').forEach((el, i) => {
+    const check = canNavigateTo(i);
+    if (!check.ok && i !== currentSection) {
+      el.classList.add('locked');
+    } else {
+      el.classList.remove('locked');
+    }
+  });
+}
+
+function renderSections() {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = courseData.sections.map((s, i) => `
+    <div class="section" data-section="${i}">
+      ${s.content}
+      ${s.type === 'content_quiz' ? renderQuiz(quizzes[s.quizId], i) : ''}
+      ${s.type === 'content_chart_dialogue' ? renderDialogue(quizzes[s.quizId], i) : ''}
+      <div class="section-nav-buttons">
+        <div>${i > 0 ? `<button class="btn btn-outline" onclick="navigateTo(${i-1})">← 上一章</button>` : ''}</div>
+        <div>${i < courseData.sections.length - 1 ? `<button class="btn" onclick="markComplete(${i});navigateTo(${i+1})">下一章 →</button>` : `<button class="btn btn-success" id="completeCourseBtn" onclick="tryCompleteCourse(${i})">✓ 完成课程</button>`}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// 导航与锁定
+// ============================================================
+function canNavigateTo(index) {
+  if (index > 0 && !quiz1Answered) return { ok: false, msg: '请先完成第1章的选择题' };
+if (index > 1 && !quiz2Answered) return { ok: false, msg: '请先完成第2章的选择题' };
+if (index > 2 && (!dialogue1Answered || dialogue1Score < 60)) return { ok: false, msg: '请先完成第3章的AI模拟对话并达到60分' };
+if (index > 3 && (!dialogue2Answered || dialogue2Score < 60)) return { ok: false, msg: '请先完成第4章的AI模拟对话并达到60分' };
+if (index > 4 && (!dialogue3Answered || dialogue3Score < 60)) return { ok: false, msg: '请先完成第5章的AI模拟对话并达到60分' };
+if (index > 5 && !quiz3Answered) return { ok: false, msg: '请先完成第6章的选择题' };
+return { ok: true };
+}
+
+function navigateTo(index) {
+  const check = canNavigateTo(index);
+  if (!check.ok) {
+    showToast('🔒 ' + check.msg, 'warning');
+    return;
+  }
+  currentSection = index;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-section').forEach(n => n.classList.remove('active'));
+  const section = document.querySelector(`.section[data-section="${index}"]`);
+  if (section) section.classList.add('active');
+  const navItem = document.querySelector(`.nav-section[data-index="${index}"]`);
+  if (navItem) navItem.classList.add('active');
+  updateProgress();
+  updateNotesForSection(index);
+  saveProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+  const mhTitle = document.getElementById('mhTitle');
+  if (mhTitle) mhTitle.textContent = courseData.sections[index].title;
+}
+
+function markComplete(index) {
+  completedSections.add(index);
+  updateProgress();
+  saveProgress();
+  showToast('「' + courseData.sections[index].title + '」已完成 ✓', 'success');
+  checkCertificate();
+}
+
+function tryCompleteCourse(index) {
+  if (!finalTaskSubmitted) {
+  showToast('请先完成终极考核并提交答案', 'warning');
+  return;
+}
+if (finalScore < 60) {
+  showToast('终极考核得分未达60分（当前' + finalScore + '分）', 'warning');
+  return;
+}
+markComplete(index);
+}
+
+function updateProgress() {
+  const total = courseData.sections.length;
+  const viewed = new Set([...completedSections, currentSection]);
+  const pct = Math.round((viewed.size / total) * 100);
+  document.getElementById('progressPercent').textContent = pct + '%';
+  document.getElementById('progressFill').style.width = pct + '%';
+  const mpbFill = document.getElementById('mpbFill');
+  if (mpbFill) mpbFill.style.width = pct + '%';
+  document.querySelectorAll('.nav-section').forEach((el, i) => {
+    if (completedSections.has(i)) el.classList.add('completed');
+  });
+}
+
+// ============================================================
+// 选择题组件
+// ============================================================
+function renderQuiz(quiz, sectionIndex) {
+  if (!quiz || quiz.isDialogue) return '';
+  return `
+    <div class="quiz-card" id="quiz-${quiz.quizId || sectionIndex}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:24px;">✍️</span>
+        <h3 style="font-size:16px;font-weight:700;">互动练习：选择题</h3>
+      </div>
+      <div class="quiz-question">${quiz.question}</div>
+      <div class="quiz-options">
+        ${quiz.options.map((opt, oi) => `
+          <div class="quiz-option" data-option="${oi}" onclick="selectQuizOption(this, ${oi}, '${quiz.quizId || sectionIndex}')">
+            <span class="quiz-option-label">${opt.label}</span>
+            <span>${opt.text}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="feedback-${quiz.quizId || sectionIndex}"></div>
+    </div>
+  `;
+}
+
+function selectQuizOption(el, optionIndex, quizId) {
+  const isCorrect = optionIndex === quiz.correct;
+if (quizId === 'quiz1') { if (quiz1Answered) return; quiz1Answered = true; quiz1Selected = optionIndex; }
+else if (quizId === 'quiz2') { if (quiz2Answered) return; quiz2Answered = true; quiz2Selected = optionIndex; }
+else if (quizId === 'quiz3') { if (quiz3Answered) return; quiz3Answered = true; quiz3Selected = optionIndex; }
+
+const card = document.getElementById('quiz-' + quizId);
+const feedback = document.getElementById('feedback-' + quizId);
+const options = card.querySelectorAll('.quiz-option');
+
+options.forEach(opt => {
+  const idx = parseInt(opt.dataset.option);
+  if (idx === quiz.correct) opt.classList.add('correct');
+  else if (idx === optionIndex) opt.classList.add('wrong');
+});
+
+if (isCorrect) {
+  card.classList.add('answered-correct');
+  feedback.className = 'quiz-feedback show correct';
+  feedback.innerHTML = quiz.feedback_correct;
+} else {
+  card.classList.add('answered-wrong');
+  feedback.className = 'quiz-feedback show wrong';
+  feedback.innerHTML = quiz.feedback_wrong;
+}
+
+saveProgress();
+updateSidebarLocks();
+}
+
+// ============================================================
+// AI 模拟对话组件
+// ============================================================
+function renderDialogue(quiz, sectionIndex) {
+  if (!quiz || !quiz.isDialogue) return '';
+  return `
+    <div class="dialogue-container" id="dialogue-container">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <span style="font-size:24px;">🤖</span>
+        <h3 style="font-size:16px;font-weight:700;">互动练习：AI模拟对话</h3>
+      </div>
+      <div class="dialogue-scenario"><strong>📋 场景设定：</strong>${quiz.scenario}</div>
+      <div class="customer-bubble">${quiz.question}</div>
+      <textarea class="reply-input" id="dialogueInput" placeholder="请运用所学策略组织回应..."></textarea>
+      <div class="dialogue-actions">
+        <button class="btn" id="submitDialogueBtn" onclick="submitDialogue()">提交回答</button>
+        <button class="btn btn-outline" onclick="resetDialogue()">重新作答</button>
+      </div>
+      <div class="ai-feedback-panel" id="dialogueFeedback"></div>
+    </div>
+  `;
+}
+
+function submitDialogue() {
+  const quizId = courseData.sections[currentSection].quizId;
+const quiz = quizzes[quizId];
+const input = document.getElementById('dialogueInput');
+if (!input || !quiz) return;
+
+const text = input.value.trim();
+if (!text) { showToast('请输入你的回应话术', 'warning'); return; }
+
+let score = 0;
+let maxScore = 0;
+const found = [];
+const missing = [];
+
+quiz.expectedKeywords.forEach(k => {
+  maxScore += k.weight;
+  const hit = k.terms.some(t => text.toLowerCase().includes(t.toLowerCase()));
+  if (hit) { score += k.weight; found.push(k.concept); }
+  else { missing.push(k.concept); }
+});
+
+let lengthBonus = 0;
+if (text.length >= 60) lengthBonus += 5;
+if (text.length >= 120) lengthBonus += 5;
+score += lengthBonus;
+maxScore += 10;
+score = Math.min(100, Math.round(score));
+
+if (quizId === 'dialogue1') { dialogue1Answered = true; dialogue1Score = score; dialogue1Text = text; }
+else if (quizId === 'dialogue2') { dialogue2Answered = true; dialogue2Score = score; dialogue2Text = text; }
+else if (quizId === 'dialogue3') { dialogue3Answered = true; dialogue3Score = score; dialogue3Text = text; }
+
+const panel = document.getElementById('dialogueFeedback');
+panel.style.display = 'block';
+let level = score >= 80 ? 'high' : score >= 60 ? 'medium' : 'low';
+const foundTags = found.map(c => `<span class="keyword-tag found">${c}</span>`).join('') || '<span class="keyword-tag missing">暂未命中</span>';
+const missingTags = missing.map(c => `<span class="keyword-tag missing">${c}</span>`).join('') || '<span class="keyword-tag found">全部覆盖</span>';
+
+panel.innerHTML = `
+  <div class="score-display"><div class="score-circle ${level}">${score}</div></div>
+  <p style="text-align:center;font-weight:700;margin:8px 0;">${score >= 60 ? '✅ 通过' : '❌ 未通过（需≥60分）'}</p>
+  <p style="margin-top:12px;font-size:13px;"><strong>已覆盖维度：</strong></p>
+  <div class="keywords-result">${foundTags}</div>
+  <p style="margin-top:12px;font-size:13px;"><strong>未覆盖维度：</strong></p>
+  <div class="keywords-result">${missingTags}</div>
+  <div class="highlight-box ${score >= 60 ? 'success' : 'warning'}" style="margin-top:16px;">
+    <p style="font-size:13px;">${text.length < 60 ? '建议：话术可以再多展开一些，尽量包含具体细节。' : '很好，你的回答已经覆盖了部分关键维度。请继续练习未命中的维度。'}</p>
+  </div>
+`;
+
+input.disabled = true;
+const btn = document.getElementById('submitDialogueBtn');
+if (btn) btn.disabled = true;
+
+saveProgress();
+updateSidebarLocks();
+}
+
+function resetDialogue() {
+  const quizId = courseData.sections[currentSection].quizId;
+const input = document.getElementById('dialogueInput');
+if (input) { input.value = ''; input.disabled = false; }
+const btn = document.getElementById('submitDialogueBtn');
+if (btn) btn.disabled = false;
+const panel = document.getElementById('dialogueFeedback');
+if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+
+if (quizId === 'dialogue1') { dialogue1Answered = false; dialogue1Score = 0; dialogue1Text = ''; }
+else if (quizId === 'dialogue2') { dialogue2Answered = false; dialogue2Score = 0; dialogue2Text = ''; }
+else if (quizId === 'dialogue3') { dialogue3Answered = false; dialogue3Score = 0; dialogue3Text = ''; }
+
+saveProgress();
+updateSidebarLocks();
+}
+
+// ============================================================
+// 终极考核组件
+// ============================================================
+function setupFinalTaskListener() {
+  const input = document.getElementById('finalTaskInput');
+  if (input) input.addEventListener('input', function() {
+    document.getElementById('finalCharCount').textContent = this.value.length + ' / 500字';
+  });
+}
+
+function submitFinalTask() {
+  const input = document.getElementById('finalTaskInput');
+if (!input) return;
+
+const text = input.value.trim();
+if (!text) { showToast('请输入你的考核话术', 'warning'); return; }
+if (finalTaskSubmitted) return;
+
+const dim1Items = [
+  { name: '学情反馈', terms: ['果果','学习','进步','外化','效果','老师反馈','孩子','掌握','作业','出勤'] },
+  { name: '课程规划', terms: ['规划','S5','S6','九阶','体系','衔接','基础','阶段','小泡芙'] },
+  { name: '方案推荐', terms: ['课包','方案','课时','打卡','剩余','10节','长期','短期','多娃','SVIP'] },
+  { name: '推单收单', terms: ['优惠','现在','确定','报名','链接','截图','缴费','登记','老带新'] }
+];
+
+const dim2Items = [
+  { name: '共情理解', terms: ['理解','知道','担心','感受','明白','顾虑','确实','害羞','腼腆','鼓励','关注'], weight: 20 },
+  { name: '价值塑造', terms: ['重要性','紧迫性','唯一性','思维','能力','长期','未来','AI','大宝','多娃','SVIP','老学员'], weight: 25 },
+  { name: '具体方案', terms: ['方案','课包','课时','价格','单价','总价','赠品','优惠','豌豆币','打卡'], weight: 25 },
+  { name: '闭环承诺', terms: ['跟进','反馈','服务','登记','兑换','确认','安排','请假','补课','停课'], weight: 20 }
+];
+
+function fluencyScore(len) {
+  if (len < 60) return 25;
+  if (len < 100) return 45;
+  if (len < 150) return 65;
+  if (len < 200) return 85;
+  return 100;
+}
+
+let d1 = 0;
+dim1Items.forEach(item => {
+  if (item.terms.some(t => text.includes(t))) d1 += 25;
+});
+let d2 = 0;
+dim2Items.forEach(item => {
+  if (item.terms.some(t => text.includes(t))) d2 += item.weight;
+});
+const d3 = fluencyScore(text.length);
+finalScore = Math.round((d1 + d2 + d3) / 3);
+finalTaskSubmitted = true;
+
+const panel = document.getElementById('finalFeedback');
+panel.style.display = 'block';
+const getLevel = s => s >= 80 ? 'high' : s >= 60 ? 'medium' : 'low';
+const getVerdict = s => s >= 80 ? '优秀' : s >= 60 ? '通过' : '未通过';
+
+panel.innerHTML = `
+  <div class="score-display"><div class="score-circle ${getLevel(finalScore)}">${finalScore}</div></div>
+  <p style="text-align:center;font-weight:700;font-size:16px;margin:8px 0;">${getVerdict(finalScore)}</p>
+  <div class="eval-dimensions" style="margin-top:16px;">
+    <div class="eval-dim"><h4>流程规范性</h4><div class="stars">${'⭐'.repeat(Math.round(d1/20))}</div><p>${d1}分</p></div>
+    <div class="eval-dim"><h4>说服力</h4><div class="stars">${'⭐'.repeat(Math.round(d2/20))}</div><p>${d2}分</p></div>
+    <div class="eval-dim"><h4>流畅度</h4><div class="stars">${'⭐'.repeat(Math.round(d3/20))}</div><p>${d3}分</p></div>
+  </div>
+  <div class="highlight-box ${finalScore >= 60 ? 'success' : 'warning'}" style="margin-top:20px;">
+    <p><strong>${finalScore >= 60 ? '✅ 已通过终极考核' : '❌ 未通过，建议回到对应章节复习后再试'}</strong></p>
+    <p style="margin-top:8px;font-size:13px;">维度反馈：流程规范性 ${d1} 分、说服力 ${d2} 分、流畅度 ${d3} 分。</p>
+    <p style="margin-top:8px;font-size:13px;">💡 提升建议：确保话术完整覆盖「学情反馈→课程规划→方案推荐→推单收单」，并用具体数字、优惠时效和价值塑造增强说服力。</p>
+  </div>
+`;
+
+input.disabled = true;
+const btn = document.getElementById('finalSubmitBtn');
+if (btn) btn.disabled = true;
+
+saveProgress();
+updateSidebarLocks();
+checkCertificate();
+}
+
+function resetFinalTask() {
+  finalTaskSubmitted = false;
+finalScore = 0;
+const input = document.getElementById('finalTaskInput');
+if (input) { input.value = ''; input.disabled = false; }
+const btn = document.getElementById('finalSubmitBtn');
+if (btn) btn.disabled = false;
+const panel = document.getElementById('finalFeedback');
+if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+const cc = document.getElementById('finalCharCount');
+if (cc) cc.textContent = '0 / 500字';
+
+saveProgress();
+updateSidebarLocks();
+}
+
+// ============================================================
+// 键盘快捷键
+// ============================================================
+function setupQuizListeners() {
+  document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'Enter') {
+      const dialogueInput = document.getElementById('dialogueInput');
+      if (dialogueInput && document.activeElement === dialogueInput) submitDialogue();
+    }
+  });
+}
+
+// ============================================================
+// 计时器
+// ============================================================
+function startTimer() {
+  const saved = localStorage.getItem(LS_PREFIX + '_study_seconds');
+  if (saved) studySeconds = parseInt(saved);
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    studySeconds++;
+    updateTimerDisplay();
+    if (studySeconds % 10 === 0) localStorage.setItem(LS_PREFIX + '_study_seconds', studySeconds);
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const mins = Math.floor(studySeconds / 60);
+  const secs = studySeconds % 60;
+  const timeStr = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = timeStr;
+  const mhTimer = document.getElementById('mhTimer');
+  if (mhTimer) mhTimer.textContent = '⏱ ' + timeStr;
+}
+
+// ============================================================
+// 笔记
+// ============================================================
+function toggleNotes() {
+  document.getElementById('notesPanel').classList.toggle('open');
+}
+function updateNotesForSection(index) {
+  document.getElementById('notesChapterLabel').textContent = courseData.sections[index].title;
+  const saved = JSON.parse(localStorage.getItem(LS_PREFIX + '_notes') || '{}');
+  document.getElementById('notesTextarea').value = saved[index] || '';
+}
+function loadNotes() {
+  const saved = JSON.parse(localStorage.getItem(LS_PREFIX + '_notes') || '{}');
+  const ta = document.getElementById('notesTextarea');
+  if (ta) {
+    ta.value = saved[currentSection] || '';
+    ta.addEventListener('input', function() {
+      const all = JSON.parse(localStorage.getItem(LS_PREFIX + '_notes') || '{}');
+      all[currentSection] = this.value;
+      localStorage.setItem(LS_PREFIX + '_notes', JSON.stringify(all));
+    });
+  }
+}
+
+// ============================================================
+// 进度持久化
+// ============================================================
+function saveProgress() {
+  const state = {
+    completedSections: [...completedSections],
+    quiz1Answered, quiz2Answered, quiz3Answered,
+quiz1Selected, quiz2Selected, quiz3Selected,
+dialogue1Answered, dialogue1Score, dialogue1Text, dialogue2Answered, dialogue2Score, dialogue2Text, dialogue3Answered, dialogue3Score, dialogue3Text,
+finalTaskSubmitted, finalScore
+  };
+  localStorage.setItem(LS_PREFIX + '_progress', JSON.stringify(state));
+}
+
+function loadProgress() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_PREFIX + '_progress'));
+    if (saved) {
+      completedSections = new Set(saved.completedSections || []);
+      quiz1Answered = saved.quiz1Answered || false;
+quiz2Answered = saved.quiz2Answered || false;
+quiz3Answered = saved.quiz3Answered || false;
+quiz1Selected = saved.quiz1Selected !== undefined ? saved.quiz1Selected : -1;
+quiz2Selected = saved.quiz2Selected !== undefined ? saved.quiz2Selected : -1;
+quiz3Selected = saved.quiz3Selected !== undefined ? saved.quiz3Selected : -1;
+dialogue1Answered = saved.dialogue1Answered || false;
+dialogue1Score = saved.dialogue1Score || 0;
+dialogue1Text = saved.dialogue1Text || '';
+dialogue2Answered = saved.dialogue2Answered || false;
+dialogue2Score = saved.dialogue2Score || 0;
+dialogue2Text = saved.dialogue2Text || '';
+dialogue3Answered = saved.dialogue3Answered || false;
+dialogue3Score = saved.dialogue3Score || 0;
+dialogue3Text = saved.dialogue3Text || '';
+finalTaskSubmitted = saved.finalTaskSubmitted || false;
+finalScore = saved.finalScore || 0;
+      updateProgress();
+      updateSidebarLocks();
+    }
+  } catch (e) {}
+}
+
+function applyLoadedState() {
+  [1, 2, 3].forEach(i => {
+    const answered = i === 1 ? quiz1Answered : i === 2 ? quiz2Answered : quiz3Answered;
+    const selected = i === 1 ? quiz1Selected : i === 2 ? quiz2Selected : quiz3Selected;
+    const quizId = 'quiz' + i;
+    if (!answered) return;
+    const quiz = quizzes[quizId];
+    const card = document.getElementById('quiz-' + quizId);
+    const feedback = document.getElementById('feedback-' + quizId);
+    if (!card || !quiz) return;
+    const options = card.querySelectorAll('.quiz-option');
+    options.forEach(opt => {
+      const idx = parseInt(opt.dataset.option);
+      if (idx === quiz.correct) opt.classList.add('correct');
+      else if (idx === selected) opt.classList.add('wrong');
+    });
+    const isCorrect = selected === quiz.correct;
+    if (isCorrect) {
+      card.classList.add('answered-correct');
+      feedback.className = 'quiz-feedback show correct';
+      feedback.innerHTML = quiz.feedback_correct;
+    } else {
+      card.classList.add('answered-wrong');
+      feedback.className = 'quiz-feedback show wrong';
+      feedback.innerHTML = quiz.feedback_wrong;
+    }
+  });
+
+  const dialogues = [
+    { id: 'dialogue1', answered: dialogue1Answered, score: dialogue1Score },
+    { id: 'dialogue2', answered: dialogue2Answered, score: dialogue2Score },
+    { id: 'dialogue3', answered: dialogue3Answered, score: dialogue3Score }
+  ];
+  dialogues.forEach(d => {
+    if (!d.answered) return;
+    const input = document.getElementById('dialogueInput');
+    const btn = document.getElementById('submitDialogueBtn');
+    const panel = document.getElementById('dialogueFeedback');
+    if (input) input.disabled = true;
+    if (btn) btn.disabled = true;
+    if (!panel) return;
+    panel.style.display = 'block';
+    const level = d.score >= 80 ? 'high' : d.score >= 60 ? 'medium' : 'low';
+    panel.innerHTML = `<div class="score-display"><div class="score-circle ${level}">${d.score}</div></div><p style="text-align:center;font-weight:700;">已提交，${d.score >= 60 ? '✅ 通过' : '❌ 未通过'}</p>`;
+  });
+
+  if (finalTaskSubmitted) {
+    const input = document.getElementById('finalTaskInput');
+    const btn = document.getElementById('finalSubmitBtn');
+    const panel = document.getElementById('finalFeedback');
+    if (input) input.disabled = true;
+    if (btn) btn.disabled = true;
+    if (panel) {
+      panel.style.display = 'block';
+      const getLevel = s => s >= 80 ? 'high' : s >= 60 ? 'medium' : 'low';
+      const getVerdict = s => s >= 80 ? '优秀' : s >= 60 ? '通过' : '未通过';
+      panel.innerHTML = `<div class="score-display"><div class="score-circle ${getLevel(finalScore)}">${finalScore}</div></div><p style="text-align:center;font-weight:700;">${getVerdict(finalScore)}</p>`;
+    }
+  }
+}
+
+// ============================================================
+// 结业证书
+// ============================================================
+function checkCertificate() {
+  let allDone = completedSections.size >= courseData.sections.length;
+  allDone = allDone && quiz1Answered && quiz2Answered && quiz3Answered
+  && dialogue1Answered && dialogue2Answered && dialogue3Answered
+  && finalTaskSubmitted && finalScore >= 60;
+  if (allDone) {
+    setTimeout(() => {
+      showToast('🏆 恭喜完成全部课程！点击领取结业证书', 'success');
+      document.getElementById('certStudentName').textContent = '请填写姓名';
+      document.getElementById('certScore').textContent = '综合评定：通过';
+      document.getElementById('certFinalScore').textContent = '终极考核得分：' + (typeof finalScore !== 'undefined' ? finalScore : '—') + ' 分';
+      document.getElementById('certDate').textContent = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+      document.getElementById('certOverlay').style.display = 'flex';
+    }, 1000);
+  }
+}
+
+function closeCertificate() {
+  document.getElementById('certOverlay').style.display = 'none';
+}
+
+function printCertificate() {
+  const cert = document.getElementById('certPaper');
+  const win = window.open('', '_blank', 'width=750,height=600');
+  win.document.write('<html><head><meta charset="UTF-8"><title>结业证书</title><style>');
+  win.document.write('body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f1f5f9;}');
+  win.document.write('.cert{background:#fff;width:700px;padding:48px 36px;text-align:center;border:2px solid #e2e8f0;border-radius:12px;}');
+  win.document.write('.cert h1{font-size:28px;color:#1d4ed8;margin-bottom:4px;}');
+  win.document.write('.cert .sub{font-size:12px;color:#64748b;letter-spacing:0.1em;margin-bottom:24px;}');
+  win.document.write('.cert .body{font-size:15px;line-height:2;color:#1e293b;}');
+  win.document.write('.cert .name{display:inline-block;border-bottom:2px solid #2563eb;min-width:120px;padding:4px 12px;margin:0 4px;}');
+  win.document.write('.cert .course{font-weight:700;color:#1d4ed8;margin:8px 0;}');
+  win.document.write('.cert .score{margin:20px 0 4px;font-size:16px;font-weight:600;color:#10b981;}');
+  win.document.write('.cert .final-score{margin:4px 0 20px;font-size:14px;font-weight:600;color:#1d4ed8;}');
+  win.document.write('.cert .footer{display:flex;justify-content:space-between;font-size:12px;color:#64748b;margin-top:32px;border-top:1px solid #e2e8f0;padding-top:16px;}');
+  win.document.write('</style></head><body><div class="cert">');
+  win.document.write(cert.innerHTML.replace(/<button[^>]*>.*?<\/button>/g, ''));
+  win.document.write('</div></body></html>');
+  win.document.close();
+  setTimeout(() => win.print(), 500);
+}
+
+// ============================================================
+// Toast & Sidebar Toggle
+// ============================================================
+function showToast(msg, type) {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2500);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('show');
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

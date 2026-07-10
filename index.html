@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIP THINK 台湾团队 · 新人启航训练营</title>
+  <meta name="description" content="VIP THINK 台湾团队 CC 与 LP 新人入职培训整合门户：退费挽单、服务流程、续费实战、质检标准 四天系统训练。">
+  <link rel="icon" href="logo.jpg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <img src="logo.jpg" alt="VIP THINK">
+        <div>
+          <div class="b-title">新人启航训练营</div>
+          <div class="b-sub">VIP THINK · 台湾团队</div>
+        </div>
+      </div>
+      <div class="nav-label">培训路线</div>
+      <nav id="navDays"></nav>
+      <div class="side-foot">
+        <div class="overall">
+          <div class="ot"><span>整体完成度</span><b>0%</b></div>
+          <div class="obar"><i></i></div>
+        </div>
+      </div>
+    </aside>
+    <div class="scrim" id="scrim"></div>
+
+    <!-- 主区域 -->
+    <div class="main">
+      <header class="topbar">
+        <button class="hamburger" id="hamburger" aria-label="菜单">☰</button>
+        <a href="#" id="goHome" title="返回首页" style="font-size:20px;color:var(--ink-2);width:34px;height:34px;display:grid;place-items:center;border-radius:9px;">🏠</a>
+        <span class="tb-title" id="tbTitle">VIP THINK <span class="accent">新人启航训练营</span></span>
+        <div class="spacer"></div>
+        <div class="tb-stat" id="tbTimer">⏱ 学习时长 <b>0s</b></div>
+        <div class="tb-stat" id="tbProgress">总进度 <b>0%</b> · 0/4 天</div>
+        <button class="tb-btn" id="btnNotes">📝 笔记</button>
+        <button class="tb-btn" id="btnCert">🏆 证书</button>
+      </header>
+      <main class="content" id="content"></main>
+    </div>
+  </div>
+
+  <!-- 弹窗 & 提示 -->
+  <div class="overlay" id="overlay"></div>
+  <div class="toast" id="toast"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

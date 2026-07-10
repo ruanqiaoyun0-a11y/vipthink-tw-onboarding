@@ -1,0 +1,10 @@
+# 大型源文件（门户部署不需要）
+*.pptx
+*.mp4
+build_course.py
+build_course_zh.py
+course_check.js
+.thumbs
+
+# 内部工作数据
+.workbuddy/
